@@ -2,6 +2,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
 import pool from './config/db.js';
+import errorHandler from './middlewares/errorHandler.js';
+import userRoutes from './routes/userRoutes.js';
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -12,9 +14,10 @@ app.use(cors());
 
 // Routes
 
+app.use('/api', userRoutes);
 
 // Error Handling
-
+app.use(errorHandler);
 
 //Testing Postgres Connection
 app.get('/', async(req, res) => {
