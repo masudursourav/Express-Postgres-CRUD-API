@@ -2,6 +2,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
 import pool from './config/db.js';
+import { createUserTable } from './data/createUserTable.js';
 import errorHandler from './middlewares/errorHandler.js';
 import userRoutes from './routes/userRoutes.js';
 dotenv.config();
@@ -18,6 +19,10 @@ app.use('/api', userRoutes);
 
 // Error Handling
 app.use(errorHandler);
+
+// Create User Table
+createUserTable();
+
 
 //Testing Postgres Connection
 app.get('/', async(req, res) => {
