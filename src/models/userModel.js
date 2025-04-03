@@ -2,8 +2,8 @@ import pool from '../config/db.js';
 
 export const getAllUsersService = async () => {
     try {
-        const [rows] = await pool.query('SELECT * FROM users');
-        return rows;
+        const result = await pool.query('SELECT * FROM users');
+        return result.rows;
     } catch (error) {
         throw error;
     }
@@ -11,8 +11,8 @@ export const getAllUsersService = async () => {
 
 export const getUserByIdService = async (userId) => {
     try {
-        const [rows] = await pool.query('SELECT * FROM users WHERE id = $1', [userId]);
-        return rows[0];
+        const result = await pool.query('SELECT * FROM users WHERE id = $1', [userId]);
+        return result.rows[0];
     } catch (error) {
         throw error;
     }
@@ -20,8 +20,8 @@ export const getUserByIdService = async (userId) => {
 export const createUserService = async (user) => {
     try {
         const { name, email } = user;
-        const [result] = await pool.query('INSERT INTO users (name, email) VALUES ($1, $2)', [name, email]);
-        return { id: result.insertId, name, email };
+        const result = await pool.query('INSERT INTO users (name, email) VALUES ($1, $2) RETURNING *', [name, email]);
+        return result.rows[0];
     } catch (error) {
         throw error;
     }
@@ -29,16 +29,16 @@ export const createUserService = async (user) => {
 export const updateUserService = async (userId, user) => {
     try {
         const { name, email } = user;
-        await pool.query('UPDATE users SET name = $1, email = $2 WHERE id = $3', [name, email, userId]);
-        return { id: userId, name, email };
+        const result = await pool.query('UPDATE users SET name = $1, email = $2 WHERE id = $3 RETURNING *', [name, email, userId]);
+        return result.rows[0];
     } catch (error) { 
         throw error;
     }
 }
 export const deleteUserService = async (userId) => {
     try {
-        await pool.query('DELETE FROM users WHERE id = $1', [userId]);
-        return { id: userId };
+       const result = await pool.query('DELETE FROM users WHERE id = $1 RETURNING *', [userId]);
+        return result.rows[0];
     } catch (error) {
         throw error;
     }
